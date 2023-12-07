@@ -25,16 +25,15 @@ pub fn answer(input_path: &str) -> Result<u32, &'static str> {
         })
         .collect();
 
-    let sum: u32 = indicies
-        .iter()
-        .map(|index| {
-            get_numbers(&input_map, &mut memory, index)
-                .iter()
-                .sum::<u32>()
-        })
-        .sum();
+    let mut output: u32 = 0;
+    for index in indicies.iter() {
+        output += get_numbers(&input_map, &mut memory, index)
+            .map_err(|_| "Error collecting numbers")?
+            .iter()
+            .sum::<u32>();
+    }
 
-    Ok(sum)
+    Ok(output)
 }
 
 // Find all numbers around the specified index
@@ -42,10 +41,10 @@ fn get_numbers(
     input_map: &Vec<&str>,
     memory: &mut Vec<Vec<bool>>,
     index: &(usize, usize),
-) -> Vec<u32> {
+) -> Result<Vec<u32>, &'static str> {
     let mut output: Vec<u32> = vec![0; 0];
 
-    let directions: Vec<(i32, i32)> = vec![
+    const DIRECTIONS: [(i32, i32); 8] = [
         (-1, -1),
         (-1, 0),
         (-1, 1),
@@ -56,37 +55,43 @@ fn get_numbers(
         (1, 1),
     ];
 
-    for &(di, dj) in &directions {
+    for &(di, dj) in &DIRECTIONS {
         let x: i32 = index.0 as i32 + di;
         let y: i32 = index.1 as i32 + dj;
 
-        if x < 0 || y < 0 || x >= input_map.len() as i32 || y >= input_map[0].len() as i32 {
-            continue;
-        }
-        if memory[x as usize][y as usize] {
+        // if out of bounds or already visited, skip
+        if memory.get(x as usize).and_then(|row| row.get(y as usize)) == Some(&true) {
             continue;
         }
 
+        // Get the character at the index, if it's a number (which it should be), get the numeric value of the whole number
+        // and add to output.
         if let Some(c) = input_map
             .get(x as usize)
             .and_then(|line| line.chars().nth(y as usize))
         {
             if c.is_numeric() {
-                memory[x as usize][y as usize] = true;
-                output.push(collect_number(
+                match collect_number(
                     input_map[x as usize],
                     memory,
                     (x as usize, y as usize),
-                ))
+                ) {
+                    Ok(number) => output.push(number),
+                    Err(_) => return Err("Error collecting number"),
+                }
             }
         }
     }
 
-    output
+    Ok(output)
 }
 
 // Collect the whole number that touches the specified index
-fn collect_number(input_map: &str, memory: &mut Vec<Vec<bool>>, index: (usize, usize)) -> u32 {
+fn collect_number(
+    input_map: &str,
+    memory: &mut Vec<Vec<bool>>,
+    index: (usize, usize),
+) -> Result<u32, &'static str> {
     let chars: Vec<char> = input_map.chars().collect();
     let start_index = chars
         .iter()
@@ -112,10 +117,5 @@ fn collect_number(input_map: &str, memory: &mut Vec<Vec<bool>>, index: (usize, u
         memory[index.0][i] = true;
     }
 
-    match number_str.parse() {
-        Ok(number) => number,
-        Err(_) => {
-            panic!("Error parsing number: {}", number_str); // panic becuase the rest of the logic is wrong.
-        }
-    }
+    number_str.parse().map_err(|_| "Error parsing number")
 }
