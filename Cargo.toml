@@ -1,5 +1,9 @@
 [workspace]
-members=[
+name = "advent_of_code"
+version = "0.1.0"
+authors = ["Steven"]
+
+members = [
     "day1",
     "day2",
     "day3"
