@@ -10,21 +10,17 @@ pub fn answer(input_path: &str) -> Result<u64, &'static str> {
     let card_info: Vec<(Vec<u32>, Vec<u32>)> = lines
         .iter()
         .map(|line| {
-            line.splitn(2, ": ")
-                .nth(1)
-                .ok_or("Unable to seperate game from info.")
-        })
-        .map(|game| {
-            let mut split_str = game?.splitn(2, " | ");
-            let first = split_str.next().ok_or("Unable to get game numbers");
-            let second = split_str.next().ok_or("Unable to get player numbers");
-
-            first.and_then(|f| second.map(|s| (f, s)))
-        })
-        .map(|x| {
-            let game_numbers = parse_numbers(x?.0);
-            let user_numbers = parse_numbers(x?.1);
-            game_numbers.and_then(|g| user_numbers.map(|u| (g, u)))
+            let parts: Vec<&str> = line.splitn(2, ": ").collect();
+            if parts.len() != 2 {
+                return Err("Unable to separate game from info.");
+            }
+            let game_parts: Vec<&str> = parts[1].splitn(2, " | ").collect();
+            if game_parts.len() != 2 {
+                return Err("Unable to seperate game numbers from player numbers");
+            }
+            let game_numbers = parse_numbers(game_parts[0])?;
+            let user_numbers = parse_numbers(game_parts[1])?;
+            Ok((game_numbers, user_numbers))
         })
         .collect::<Result<Vec<(Vec<u32>, Vec<u32>)>, &'static str>>()?;
 
@@ -47,8 +43,8 @@ fn parse_numbers(input: &str) -> Result<Vec<u32>, &'static str> {
     input
         .split_whitespace()
         .map(|s| {
-            s.trim().parse::<u32>().map_err(|e| {
-                println!("{:?}", e);
+            s.parse::<u32>().map_err(|e| {
+                eprintln!("{:?}", e);
                 "Error parsing input"
             })
         })
