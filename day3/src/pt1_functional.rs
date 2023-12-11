@@ -71,11 +71,7 @@ fn get_numbers(
             .and_then(|line| line.chars().nth(y as usize))
         {
             if c.is_numeric() {
-                match collect_number(
-                    input_map[x as usize],
-                    memory,
-                    (x as usize, y as usize),
-                ) {
+                match collect_number(input_map[x as usize], memory, (x as usize, y as usize)) {
                     Ok(number) => output.push(number),
                     Err(_) => return Err("Error collecting number"),
                 }
