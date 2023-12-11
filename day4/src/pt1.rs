@@ -76,8 +76,6 @@ pub fn answer(input_path: &str) -> Result<u64, &'static str> {
         .filter(|res| res.len() != 0)
         .map(|m| 1 * 2_u64.pow(m.len() as u32 - 1 as u32))
         .sum();
-    println!("{:?}", matches);
-    println!("{}", output);
 
     Ok(output)
 }
