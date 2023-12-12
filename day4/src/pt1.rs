@@ -1,11 +1,7 @@
-use std::fs::read_to_string;
+use crate::helper_functions;
 
 pub fn answer(input_path: &str) -> Result<u64, &'static str> {
-    let lines = read_to_string(input_path)
-        .map_err(|_| "Unable to read input file.")?
-        .lines()
-        .map(|lines| lines.trim().to_string())
-        .collect::<Vec<String>>();
+    let lines: Vec<String> = helper_functions::read_file(input_path)?;
 
     let card_info: Vec<(Vec<u32>, Vec<u32>)> = lines
         .iter()
@@ -18,8 +14,8 @@ pub fn answer(input_path: &str) -> Result<u64, &'static str> {
             if game_parts.len() != 2 {
                 return Err("Unable to seperate game numbers from player numbers");
             }
-            let game_numbers = parse_numbers(game_parts[0])?;
-            let user_numbers = parse_numbers(game_parts[1])?;
+            let game_numbers = helper_functions::parse_numbers(game_parts[0])?;
+            let user_numbers = helper_functions::parse_numbers(game_parts[1])?;
             Ok((game_numbers, user_numbers))
         })
         .collect::<Result<Vec<(Vec<u32>, Vec<u32>)>, &'static str>>()?;
@@ -37,16 +33,4 @@ pub fn answer(input_path: &str) -> Result<u64, &'static str> {
         .sum();
 
     Ok(output)
-}
-
-fn parse_numbers(input: &str) -> Result<Vec<u32>, &'static str> {
-    input
-        .split_whitespace()
-        .map(|s| {
-            s.parse::<u32>().map_err(|e| {
-                eprintln!("{:?}", e);
-                "Error parsing input"
-            })
-        })
-        .collect()
 }
