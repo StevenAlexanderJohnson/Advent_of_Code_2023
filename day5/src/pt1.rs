@@ -76,7 +76,7 @@ fn perform_transformation(
 ) -> Result<(), &'static str> {
     let transform = |x: u64| -> u64 {
         for t in &transformations {
-            if (t.source_range_start..t.source_range_start + t.range).contains(&x) {
+            if t.source_range_start <= x && t.source_range_start+t.range >=x {
                 return t.destination_range_start + (x - t.source_range_start);
             }
         }

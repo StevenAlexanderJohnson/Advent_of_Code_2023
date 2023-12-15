@@ -1,7 +1,13 @@
 mod pt1;
+mod pt2;
 fn main() {
-    match pt1::answer("./day5_input/test_input.txt") {
+    match pt1::answer("./day5_input/input.txt") {
         Ok(x) => println!("Pt1 Answer: {}", x),
         Err(e) => println!("{}", e),
+    }
+
+    match pt2::answer("./day5_input/test_input.txt") {
+        Ok(x) => println!("Pt2 Answer: {}", x),
+        Err(e) => println!("{}", e)
     }
 }
