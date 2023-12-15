@@ -58,7 +58,7 @@ pub fn answer(input_path: &str) -> Result<u32, &'static str> {
 
 fn find_race_error_margin(race: &RaceInfo) -> u32 {
     let mut margin: u32 = 0;
-    let mid: u32 = (2 * race.duration) / 4;
+    let mid: u32 = race.duration / 2;
     let mut charge_duration: u32 = mid;
 
     while (race.duration - charge_duration) * charge_duration > race.record {
