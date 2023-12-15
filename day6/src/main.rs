@@ -1,4 +1,5 @@
 mod pt1;
+mod helper_functions;
 
 fn main() {
     match pt1::answer("./day6_input/input.txt") {
