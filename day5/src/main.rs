@@ -9,6 +9,6 @@ fn main() {
     // Day 2 is incorrect.
     match pt2::answer("./day5_input/test_input.txt") {
         Ok(x) => println!("Pt2 Answer: {}", x),
-        Err(e) => println!("{}", e)
+        Err(e) => println!("{}", e),
     }
 }

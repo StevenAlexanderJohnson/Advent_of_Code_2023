@@ -57,17 +57,25 @@ pub fn answer(input_path: &str) -> Result<u64, &'static str> {
 
     for section in transform_ranges {
         for transform in section {
-            println!("Destination: {}, Source: {}-{}", transform.destination_range_start, transform.source_range_start, transform.source_range_start + transform.range);
+            println!(
+                "Destination: {}, Source: {}-{}",
+                transform.destination_range_start,
+                transform.source_range_start,
+                transform.source_range_start + transform.range
+            );
             for range in &mut ranges {
                 println!("Range: {:?}", range);
                 // If the ranges overlap
-                if !(range.1 < transform.source_range_start || transform.source_range_start + transform.range < range.0)
+                if !(range.1 < transform.source_range_start
+                    || transform.source_range_start + transform.range < range.0)
                 {
                     range.0 = range.0.max(transform.source_range_start);
                     range.1 = range.1.min(transform.source_range_start + transform.range);
 
-                    range.0 = (range.0 - transform.source_range_start) + transform.destination_range_start;
-                    range.1 = (range.1 - transform.source_range_start) + transform.destination_range_start;
+                    range.0 = (range.0 - transform.source_range_start)
+                        + transform.destination_range_start;
+                    range.1 = (range.1 - transform.source_range_start)
+                        + transform.destination_range_start;
                 }
             }
         }
