@@ -49,8 +49,6 @@ pub fn parse_input_into_races(file_data: Vec<String>) -> Result<Vec<RaceInfo>, &
 pub fn remove_kerning_and_parse_race(file_data: Vec<String>) -> Result<RaceInfo, &'static str> {
     let race_record: String = str::replace(&file_data[1], " ", "");
 
-    println!("Record {}", race_record);
-
     let race_record = race_record
         .parse::<u64>()
         .map_err(|_| "Unable to parse race record.")?;
@@ -58,8 +56,6 @@ pub fn remove_kerning_and_parse_race(file_data: Vec<String>) -> Result<RaceInfo,
     let race_duration: u64 = str::replace(&file_data[0], " ", "")
         .parse::<u64>()
         .map_err(|_| "Unable to parse race duration.")?;
-
-    println!("Record: {}, Duration: {}", race_record, race_duration);
 
     Ok(RaceInfo {
         record: race_record,
