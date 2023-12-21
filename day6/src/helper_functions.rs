@@ -63,11 +63,18 @@ pub fn remove_kerning_and_parse_race(file_data: Vec<String>) -> Result<RaceInfo,
     })
 }
 
+// If we look at the pattern for the test input we can see that the distance traveled is a quadratic equation.
+// We can see that the race duration is the constant, and charge time is the variable.
+// distance = (race_duration - charge_time) * charge_time == (k - x) * x == -x^2 + kx
+// There is an equation that describes the max point of a quadratic equation, but seeing it always starts at 0 and we have a max value,
+// the max value is always the middle of the domain.
 pub fn find_race_error_margin(race: &RaceInfo) -> u64 {
     let mut margin: u64 = 0;
     let mid: u64 = race.duration / 2;
     let mut charge_duration: u64 = mid;
 
+    // Iterate because quadratic equation requires negative numbers which u64 doesn't allow.
+    // We already know the max range, so iteration won't take that much longer.
     while (race.duration - charge_duration) * charge_duration > race.record {
         margin += 1;
         charge_duration -= 1;
